@@ -1,0 +1,13 @@
+build/
+_ReSharper*
+bin/
+*.swp
+obj/
+*.user
+*.suo
+*.cache
+packages/
+.vs
+packages/*
+.idea/
+*.sln.iml

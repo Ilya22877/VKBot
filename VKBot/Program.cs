@@ -3,6 +3,7 @@ using CommandLine;
 using VkNet;
 using VkNet.Enums.Filters;
 using VkNet.Model;
+using VKBot.MainLogic;
 using VKBot.Models;
 
 namespace VKBot
@@ -15,12 +16,23 @@ namespace VKBot
 			{
 				var options = GetOptions(args);
 				var worker = GetWorker(options);
+				string id;
+				while (!string.IsNullOrWhiteSpace(id = GetId()))
+				{
+					worker.Execute(id);
+				}
 			}
 			catch (Exception e)
 			{
 				Console.WriteLine(e.ToString());
+				Console.ReadLine();
 			}
-			Console.ReadLine();
+		}
+
+		private static string GetId()
+		{
+			Console.WriteLine("Enter user or group id:");
+			return Console.ReadLine();
 		}
 
 		private static Worker GetWorker(Options options)

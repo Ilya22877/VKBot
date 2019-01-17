@@ -99,6 +99,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Extensions\VkApiExtensions.cs" />
     <Compile Include="Log\ConsoleLog.cs" />
     <Compile Include="Log\ILog.cs" />
     <Compile Include="Models\Options.cs" />

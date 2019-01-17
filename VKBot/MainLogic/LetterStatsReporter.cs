@@ -55,34 +55,13 @@ namespace VKBot.MainLogic
 
 		private ReadOnlyCollection<Post> GetPosts(string id)
 		{
-			var wallGetParams = CreateWallGetParams(id);
-			var posts = _vkApi.Wall.Get(wallGetParams);
-			EnsurePostCount(posts.WallPosts.Count);
-			return posts.WallPosts;
-		}
-
-		private void EnsurePostCount(int postCount)
-		{
-			if (postCount < _postCount)
+			var posts = _vkApi.GetPosts(id, _postCount);
+			if (posts.Count < _postCount)
 			{
-				throw new Exception($"Count of found posts ({postCount}) less then {_postCount}");
-			}
-		}
-
-		private WallGetParams CreateWallGetParams(string id)
-		{
-			var wallGetParams = new WallGetParams {Count = (ulong)_postCount };
-			if (long.TryParse(id, out var ownerId))
-			{
-				wallGetParams.OwnerId = ownerId;
-			}
-			else
-			{
-				var vkObj = _vkApi.Utils.ResolveScreenName(id);
-				wallGetParams.OwnerId = vkObj?.Id ?? throw new Exception("Invalid screen name");
+				throw new Exception($"Count of found posts ({posts.Count}) less then {_postCount}");
 			}
 
-			return wallGetParams;
+			return posts;
 		}
 	}
 }

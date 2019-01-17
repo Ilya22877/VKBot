@@ -40,19 +40,6 @@ namespace VKBot.MainLogic
 			}
 		}
 
-		private void Report(string id, string stats)
-		{
-			var message = $"{id}, статистика для последних {_postCount} постов: {stats}";
-			_vkApi.Wall.Post(new WallPostParams{Message = message, OwnerId = -176827944 });
-			_log.Info(message);
-		}
-
-		private static string CountStats(ReadOnlyCollection<Post> posts)
-		{
-			var totalText = string.Join("", posts.Select(x => x.Text));
-			return JsonConvert.SerializeObject(totalText.CountStatsOfLetters());
-		}
-
 		private ReadOnlyCollection<Post> GetPosts(string id)
 		{
 			var posts = _vkApi.GetPosts(id, _postCount);
@@ -62,6 +49,20 @@ namespace VKBot.MainLogic
 			}
 
 			return posts;
+		}
+
+		private static string CountStats(ReadOnlyCollection<Post> posts)
+		{
+			var totalText = string.Join("", posts.Select(x => x.Text));
+			return JsonConvert.SerializeObject(totalText.CountStatsOfLetters());
+		}
+
+		private void Report(string id, string stats)
+		{
+			var message = $"{id}, статистика для последних {_postCount} постов: {stats}";
+			var postId = _vkApi.Wall.Post(new WallPostParams{Message = message});
+			_log.Info($"Post was created. Id: {postId}");
+			_log.Info(message);
 		}
 	}
 }

@@ -18,7 +18,7 @@ namespace VKBot.Extensions
 			else
 			{
 				var vkObj = vkApi.Utils.ResolveScreenName(id);
-				wallGetParams.OwnerId = vkObj?.Id ?? throw new Exception("Invalid screen name");
+				wallGetParams.OwnerId = vkObj?.Id ?? throw new Exception("Invalid screen name (id).");
 			}
 
 			return vkApi.Wall.Get(wallGetParams).WallPosts;

@@ -3,22 +3,23 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Newtonsoft.Json;
 using VkNet.Abstractions;
-using VkNet.Model;
 using VkNet.Model.Attachments;
 using VkNet.Model.RequestParams;
-using VkNet.Utils;
 using VKBot.Extensions;
+using VKBot.Log;
 
 namespace VKBot.MainLogic
 {
 	public class LetterStatsReporter
 	{
 		private readonly IVkApi _vkApi;
+		private readonly ILog _log;
 		private readonly int _postCount;
 
-		public LetterStatsReporter(IVkApi vkApi, int postCount = 5)
+		public LetterStatsReporter(IVkApi vkApi, ILog log, int postCount = 5)
 		{
 			_vkApi = vkApi;
+			_log = log;
 			_postCount = postCount;
 		}
 
@@ -26,20 +27,24 @@ namespace VKBot.MainLogic
 		{
 			try
 			{
+				_log.Info("Getting post...");
 				var posts = GetPosts(id);
+				_log.Info("Count stats...");
 				var stats = CountStats(posts);
+				_log.Info("Report...");
 				Report(id, stats);
 			}
 			catch (Exception e)
 			{
-				Console.WriteLine(e);
+				_log.Error(e.ToString());
 			}
 		}
 
 		private void Report(string id, string stats)
 		{
-			Console.WriteLine($"{id}, статистика для последних {_postCount} постов: {stats}");
-
+			var message = $"{id}, статистика для последних {_postCount} постов: {stats}";
+			_vkApi.Wall.Post(new WallPostParams{Message = message, OwnerId = -176827944 });
+			_log.Info(message);
 		}
 
 		private static string CountStats(ReadOnlyCollection<Post> posts)

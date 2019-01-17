@@ -3,6 +3,7 @@ using CommandLine;
 using VkNet;
 using VkNet.Enums.Filters;
 using VkNet.Model;
+using VKBot.Log;
 using VKBot.MainLogic;
 using VKBot.Models;
 
@@ -10,21 +11,23 @@ namespace VKBot
 {
 	class Program
 	{
+		private static readonly ILog Log = new ConsoleLog();
 		static void Main(string[] args)
 		{
 			try
 			{
 				var options = GetOptions(args);
-				var worker = GetWorker(options);
+				var reporter = GetReporter(options, Log);
+				Log.Info("VKBot is started!");
 				string id;
 				while (!string.IsNullOrWhiteSpace(id = GetId()))
 				{
-					worker.Execute(id);
+					reporter.Execute(id);
 				}
 			}
 			catch (Exception e)
 			{
-				Console.WriteLine(e.ToString());
+				Log.Error(e.ToString());
 				Console.ReadLine();
 			}
 		}
@@ -35,7 +38,7 @@ namespace VKBot
 			return Console.ReadLine();
 		}
 
-		private static LetterStatsReporter GetWorker(Options options)
+		private static LetterStatsReporter GetReporter(Options options, ILog log)
 		{
 			var api = new VkApi();
 			api.Authorize(new ApiAuthParams
@@ -46,7 +49,7 @@ namespace VKBot
 				Settings = Settings.All
 			});
 
-			return new LetterStatsReporter(api);
+			return new LetterStatsReporter(api, log);
 		}
 
 		private static Options GetOptions(string[] args)

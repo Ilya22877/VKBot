@@ -6,7 +6,7 @@ namespace VKBot.Extensions
 {
 	public static class StringExtensions
 	{
-		public static Dictionary<char, double> GetStatsOfLetters(this string text)
+		public static Dictionary<char, double> CountStatsOfLetters(this string text)
 		{
 			var countOfLetters = new Dictionary<char, int>();
 			foreach (var symbol in text)

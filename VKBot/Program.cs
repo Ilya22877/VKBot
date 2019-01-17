@@ -35,7 +35,7 @@ namespace VKBot
 			return Console.ReadLine();
 		}
 
-		private static Worker GetWorker(Options options)
+		private static LetterStatsReporter GetWorker(Options options)
 		{
 			var api = new VkApi();
 			api.Authorize(new ApiAuthParams
@@ -46,7 +46,7 @@ namespace VKBot
 				Settings = Settings.All
 			});
 
-			return new Worker(api);
+			return new LetterStatsReporter(api);
 		}
 
 		private static Options GetOptions(string[] args)

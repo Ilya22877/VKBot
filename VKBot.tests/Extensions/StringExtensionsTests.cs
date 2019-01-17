@@ -17,9 +17,9 @@ namespace VKBot.tests.Extensions
 		[TestCase("абвгд", ExpectedResult = "{\"а\":0.2,\"б\":0.2,\"в\":0.2,\"г\":0.2,\"д\":0.2}")]
 		[TestCase("32()&&% ", ExpectedResult = "{}")]
 		[TestCase("a^b)cd3232 3", ExpectedResult = "{\"a\":0.25,\"b\":0.25,\"c\":0.25,\"d\":0.25}")]
-		public string GetStatsOfLetters(string text)
+		public string CountStatsOfLetters(string text)
 		{
-			var result = text.GetStatsOfLetters();
+			var result = text.CountStatsOfLetters();
 
 			if (result.Any())
 			{

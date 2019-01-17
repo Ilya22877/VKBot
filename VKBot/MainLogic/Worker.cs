@@ -1,18 +1,23 @@
 ﻿using System;
 using System.Deployment.Application;
 using System.Linq;
+using Newtonsoft.Json;
 using VkNet.Abstractions;
+using VkNet.Model;
 using VkNet.Model.RequestParams;
+using VKBot.Extensions;
 
 namespace VKBot.MainLogic
 {
 	public class Worker
 	{
 		private readonly IVkApi _vkApi;
+		private readonly int _postCount;
 
-		public Worker(IVkApi vkApi)
+		public Worker(IVkApi vkApi, int postCount = 5)
 		{
 			_vkApi = vkApi;
+			_postCount = postCount;
 		}
 
 		public void Execute(string id)
@@ -21,15 +26,14 @@ namespace VKBot.MainLogic
 			{
 				var wallGetParams = GetWalParams(id);
 				var posts = _vkApi.Wall.Get(wallGetParams);
-				//Utilities.GetNullableLongId(new VkResponse())
-				//var wallGetParams = 0;37841547  ; id73326429
-				//var posts = _vkApi.Wall.Get(new WallGetParams { OwnerId = 37841547, Count = 5 });
-				//var res = _vkApi.Groups.Get(new GroupsGetParams());
-
+				EnsurePostCount(posts.WallPosts.Count);
+				var totalText = string.Join("", posts.WallPosts.Select(x => x.Text));
+				var stats = JsonConvert.SerializeObject(totalText.GetStatsOfLetters());
+				//_vkApi.Utils.ResolveScreenName()
 				Console.WriteLine($"Count of found posts: {posts.WallPosts.Count}");
 				if (posts.WallPosts.Count > 0)
 				{
-					Console.WriteLine($"First post: {posts.WallPosts.First().Text}");
+					Console.WriteLine($"{id}, статистика для последних {_postCount} постов: {stats}");
 				}
 			}
 			catch (Exception e)
@@ -38,17 +42,25 @@ namespace VKBot.MainLogic
 			}
 		}
 
-		private static WallGetParams GetWalParams(string id)
+		private void EnsurePostCount(int postCount)
 		{
-			var wallGetParams = new WallGetParams {Count = 5};
+			if (postCount < _postCount)
+			{
+				throw new Exception($"Count of found posts ({postCount}) less then {_postCount}");
+			}
+		}
+
+		private WallGetParams GetWalParams(string id)
+		{
+			var wallGetParams = new WallGetParams {Count = (ulong)_postCount };
 			if (long.TryParse(id, out var ownerId))
 			{
 				wallGetParams.OwnerId = ownerId;
 			}
 			else
 			{
-				//todo добавить проверку domain
-				wallGetParams.Domain = id;
+				var vkObj = _vkApi.Utils.ResolveScreenName(id);
+				wallGetParams.OwnerId = vkObj?.Id ?? throw new Exception("Invalid screen name");
 			}
 
 			return wallGetParams;

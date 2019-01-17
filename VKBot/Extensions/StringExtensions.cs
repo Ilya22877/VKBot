@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace VKBot.Extensions
@@ -21,7 +22,9 @@ namespace VKBot.Extensions
 			}
 
 			var totalLetterCount = countOfLetters.Sum(x => x.Value);
-			return countOfLetters.ToDictionary(x => x.Key, x => (double)x.Value / totalLetterCount);
+			return countOfLetters
+				.OrderBy(x => x.Key)
+				.ToDictionary(x => x.Key, x => Math.Round((double)x.Value / totalLetterCount, 5));
 		}
 	}
 }

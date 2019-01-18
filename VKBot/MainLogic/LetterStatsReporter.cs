@@ -10,7 +10,7 @@ using VKBot.Log;
 
 namespace VKBot.MainLogic
 {
-	public class LetterStatsReporter
+	public class LetterStatsReporter : IWorker
 	{
 		private readonly IVkApi _vkApi;
 		private readonly ILog _log;
@@ -45,7 +45,7 @@ namespace VKBot.MainLogic
 			var posts = _vkApi.GetPosts(id, _postCount);
 			if (posts.Count < _postCount)
 			{
-				throw new Exception($"Count of found posts ({posts.Count}) less then {_postCount}");
+				throw new Exception($"Count of found posts ({posts.Count}) less then {_postCount}.");
 			}
 
 			return posts;
@@ -61,7 +61,7 @@ namespace VKBot.MainLogic
 		{
 			var message = $"{id}, статистика для последних {_postCount} постов: {stats}";
 			var postId = _vkApi.Wall.Post(new WallPostParams{Message = message});
-			_log.Info($"Post was created. Id: {postId}");
+			_log.Info($"Post was created. Id: {postId}.");
 			_log.Info(message);
 		}
 	}

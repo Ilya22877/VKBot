@@ -62,7 +62,7 @@ namespace VKBot.tests.MainLogic
 			Mock.Get(_log)
 				.Verify(x => x.Error(It.IsAny<string>()), Times.Never);
 			Mock.Get(_log)
-				.Verify(x => x.Info($"Post was created. Id: {PostId}"), Times.Once);
+				.Verify(x => x.Info($"Post was created. Id: {PostId}."), Times.Once);
 		}
 
 		[Test]

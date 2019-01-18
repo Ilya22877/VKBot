@@ -102,6 +102,7 @@
     <Compile Include="Extensions\VkApiExtensions.cs" />
     <Compile Include="Log\ConsoleLog.cs" />
     <Compile Include="Log\ILog.cs" />
+    <Compile Include="MainLogic\IWorker.cs" />
     <Compile Include="Models\Options.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
